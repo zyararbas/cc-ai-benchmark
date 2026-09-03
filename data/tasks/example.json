@@ -1,0 +1,28 @@
+{
+  "name": "example",
+  "version": "1.0.0",
+  "description": "A tiny smoke suite that exercises the harness end to end.",
+  "tasks": [
+    {
+      "id": "arith-001",
+      "prompt": "What is 2 + 2?",
+      "expected": "4",
+      "tags": ["arithmetic"],
+      "metadata": { "difficulty": "trivial" }
+    },
+    {
+      "id": "capital-001",
+      "prompt": "What is the capital of France?",
+      "expected": "Paris",
+      "tags": ["factual"],
+      "metadata": { "difficulty": "easy" }
+    },
+    {
+      "id": "format-001",
+      "prompt": "Return the word 'ok' in lowercase.",
+      "expected": "ok",
+      "tags": ["instruction-following"],
+      "metadata": { "difficulty": "easy" }
+    }
+  ]
+}

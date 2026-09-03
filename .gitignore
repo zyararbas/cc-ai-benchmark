@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.eggs/
+
+# Environments
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/
+
+# Benchmark run artifacts (see outputs/.gitignore for the keep rule)
+
+# Local credentials and project ids: never committed (this repo is public).
+config/local.env
+
+# Licensed source material and the bank derived from it.
+#
+# This repository is PUBLIC. data/documents/ holds 34MB of third-party P&C
+# exam-prep books, and data/bank/pc-bank.jsonl holds 679 question stems copied
+# verbatim out of them. Redistributing either is a licensing question nobody
+# has answered yet, and a public git history is not reversible.
+#
+# Both are reproducible locally: put the documents in place and run
+# `cc-ai-benchmark build-bank`. Delete these two lines once the licensing
+# position is settled and republication is a decision rather than an accident.
+data/documents/
+data/bank/

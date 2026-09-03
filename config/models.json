@@ -1,0 +1,56 @@
+{
+  "_comment": "The systems a sweep runs. Model ids MUST be exact provider snapshot ids -- floating aliases move underneath you and break comparability between runs. The ids below marked FILL-IN are placeholders: set them from each provider's model list, then run `cc-ai-benchmark verify` to confirm before a full sweep. Whatever the provider actually resolves to is what lands in the report.",
+  "systems": {
+    "gemini-flash": {
+      "adapter": "gemini",
+      "model": "gemini-3.8-flash",
+      "label": "gemini-3.8-flash",
+      "vertex": true,
+      "project": "${GOOGLE_CLOUD_PROJECT}",
+      "location": "${GOOGLE_CLOUD_LOCATION}"
+    },
+    "gemini-pro": {
+      "adapter": "gemini",
+      "model": "gemini-3.1-pro-preview",
+      "label": "gemini-3.1-pro",
+      "vertex": true,
+      "project": "${GOOGLE_CLOUD_PROJECT}",
+      "location": "${GOOGLE_CLOUD_LOCATION}"
+    },
+    "anthropic": {
+      "adapter": "anthropic",
+      "model": "claude-opus-5",
+      "effort": "medium",
+      "label": "claude-opus-5"
+    },
+    "openai": {
+      "adapter": "openai",
+      "model": "FILL-IN-openai-latest-snapshot-id",
+      "label": "openai-latest"
+    },
+    "our-approach": {
+      "adapter": "grounded",
+      "base_system": "gemini",
+      "base_kwargs": {
+        "model": "gemini-3.1-pro-preview",
+        "vertex": true,
+        "project": "${GOOGLE_CLOUD_PROJECT}",
+        "location": "${GOOGLE_CLOUD_LOCATION}"
+      },
+      "strategy": "full",
+      "label": "our-approach"
+    },
+    "gemini-flash-lite": {
+      "adapter": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "label": "gemini-3.5-flash-lite",
+      "vertex": true,
+      "project": "${GOOGLE_CLOUD_PROJECT}",
+      "location": "${GOOGLE_CLOUD_LOCATION}"
+    }
+  },
+  "defaults": {
+    "condition": "C0",
+    "our_approach_condition": "C3"
+  }
+}

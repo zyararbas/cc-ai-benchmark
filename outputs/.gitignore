@@ -1,0 +1,4 @@
+# Benchmark runs are generated artifacts: keep the directory, ignore its contents.
+*
+!.gitignore
+!README.md

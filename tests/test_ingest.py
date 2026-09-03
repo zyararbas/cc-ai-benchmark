@@ -129,3 +129,23 @@ def test_build_bank_skips_tombstones_without_shifting_sequence(tmp_path):
     items = build_bank(raw_dir=tmp_path, audit_path=tmp_path / "missing.json")
     assert [i.id for i in items] == ["pc-09-0001", "pc-09-0003"]
     assert items[1].question == "Third"
+
+
+def test_pdf_route_reports_a_missing_dependency_rather_than_crashing(tmp_path, monkeypatch):
+    """The PDF extra is optional; its absence must be a message, not a traceback."""
+    import builtins
+
+    import docx_images
+
+    real_import = builtins.__import__
+
+    def no_pypdf(name, *args, **kwargs):
+        if name == "pypdf":
+            raise ImportError("no pypdf")
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", no_pypdf)
+    path = tmp_path / "doc.pdf"
+    path.write_bytes(b"%PDF-1.4\n")
+    with pytest.raises(RuntimeError, match=r"pypdf not installed"):
+        docx_images.extract(path, tmp_path / "out")

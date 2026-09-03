@@ -23,8 +23,17 @@ report ever produced. If a document is renamed, keep its original `N`.
 ## Step 1 — Pull the images out, in document order
 
 ```bash
-python scripts/docx_images.py "$DOC" -o work/<N>/
+python scripts/docx_images.py "$DOC" -o work/<N>/     # .docx or .pdf
 ```
+
+Both formats are handled. The same deck often arrives twice, once as each, and
+the embedded screenshots are usually byte-for-byte the same picture re-encoded
+— so a PDF alongside a `.docx` is a second copy, not a second document, and it
+does not get its own `N`. Prefer whichever is present; if both are, they should
+agree, and a disagreement in image count is worth understanding before you
+extract from either.
+
+The PDF route needs `pip install -e ".[pdf]"`.
 
 Do not read the images out of the zip yourself. Archive order is alphabetical,
 which puts `image10` before `image2`; the script resolves the relationship table

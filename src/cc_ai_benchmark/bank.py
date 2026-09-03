@@ -87,8 +87,15 @@ def build_bank(raw_dir: Path = RAW_DIR, audit_path: Path = AUDIT_PATH) -> list[I
                 continue
             raw = json.loads(line)
             uid = f"{path.name}:{raw['id']}"
+            # seq advances before any skip, so an id is a line position and
+            # dropping an item never renames the ones after it.
             seq += 1
             if uid in retire:
+                continue
+            # A tombstone left by reconcile_extraction.py: the question is gone
+            # from the source document, but its slot is held so the sequence
+            # numbers of everything below it do not shift onto new questions.
+            if raw.get("retired"):
                 continue
             items.append(
                 Item(

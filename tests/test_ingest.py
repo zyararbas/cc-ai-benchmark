@@ -149,3 +149,22 @@ def test_pdf_route_reports_a_missing_dependency_rather_than_crashing(tmp_path, m
     path.write_bytes(b"%PDF-1.4\n")
     with pytest.raises(RuntimeError, match=r"pypdf not installed"):
         docx_images.extract(path, tmp_path / "out")
+
+
+def test_duplicate_audit_ignores_tombstones(tmp_path):
+    """A retired question must not resurface as a duplicate of its replacement."""
+    import audit_duplicates
+
+    live = {
+        "id": "q_2",
+        "question": "What is a peril?",
+        "choices": {"A": "cause", "B": "condition"},
+        "answer": "A",
+        "scope": "S",
+    }
+    dead = {**live, "id": "q_1", "retired": True}
+    path = tmp_path / "scoped_questions_1.json"
+    path.write_text(json.dumps(dead) + "\n" + json.dumps(live) + "\n", encoding="utf-8")
+
+    items = audit_duplicates.load(tmp_path)
+    assert [i["id"] for i in items] == ["q_2"]

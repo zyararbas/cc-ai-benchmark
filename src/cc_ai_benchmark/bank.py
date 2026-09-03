@@ -1,6 +1,7 @@
 """The question bank: loading it, and building it from the raw extraction.
 
-The raw extraction in `outputs/` uses file-local ids (`q_1` appears in every
+The raw extraction in `data/documents/questions/` uses file-local ids (`q_1`
+appears in every
 file), so ids there do not identify an item. `build_bank` materializes a single
 `data/bank/pc-bank.jsonl` with global, stable ids, the duplicate retirements
 from `data/audit/duplicates.json` applied, and review clusters flagged. Runs
@@ -16,7 +17,7 @@ from pathlib import Path
 from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-RAW_DIR = REPO_ROOT / "outputs"
+RAW_DIR = REPO_ROOT / "data" / "documents" / "questions"
 BANK_PATH = REPO_ROOT / "data" / "bank" / "pc-bank.jsonl"
 AUDIT_PATH = REPO_ROOT / "data" / "audit" / "duplicates.json"
 

@@ -25,7 +25,7 @@ from pathlib import Path
 from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-RAW_DIR = REPO_ROOT / "outputs"
+RAW_DIR = REPO_ROOT / "data" / "documents" / "questions"
 
 WHITESPACE = re.compile(r"\s+")
 PUNCT = re.compile(r"[^\w\s]")

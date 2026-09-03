@@ -1,4 +1,4 @@
-"""Reading suites off disk and writing run reports into `outputs/`."""
+"""Reading suites off disk and writing run reports into `outputs/benchmark-runs/`."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from cc_ai_benchmark.models import RunReport, TaskSuite
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = REPO_ROOT / "data" / "tasks"
-OUTPUT_DIR = REPO_ROOT / "outputs"
+OUTPUT_DIR = REPO_ROOT / "outputs" / "benchmark-runs"
 
 _SLUG_RE = re.compile(r"[^a-z0-9]+")
 
@@ -50,12 +50,32 @@ def resolve_suite(reference: str, directory: Path = DATA_DIR) -> Path:
     raise FileNotFoundError(f"no suite matching {reference!r} (available: {known})")
 
 
+def run_dir(output_dir: Path, timestamp: str) -> Path:
+    """`<output_dir>/YYYY_MM_DD/` -- the day carries the date so names need not."""
+    day = timestamp[:10].replace("-", "_")
+    directory = output_dir / day
+    directory.mkdir(parents=True, exist_ok=True)
+    return directory
+
+
+def unique_path(directory: Path, stem: str, suffix: str) -> Path:
+    """`stem.suffix`, or `stem-2.suffix` when that day already holds one.
+
+    Short names are only worth having if a second run of the same name does not
+    silently overwrite the first.
+    """
+    candidate = directory / f"{stem}{suffix}"
+    counter = 2
+    while candidate.exists():
+        candidate = directory / f"{stem}-{counter}{suffix}"
+        counter += 1
+    return candidate
+
+
 def write_report(report: RunReport, output_dir: Path = OUTPUT_DIR) -> Path:
-    """Write a report to `outputs/<timestamp>-<suite>-<runner>.json` and return its path."""
-    stamp = report.started_at.replace(":", "").replace("-", "")
-    name = f"{stamp}-{_slug(report.suite)}-{_slug(report.runner)}.json"
-    output_dir.mkdir(parents=True, exist_ok=True)
-    path = output_dir / name
+    """Write to `outputs/benchmark-runs/<YYYY_MM_DD>/<suite>-<runner>.json`."""
+    directory = run_dir(output_dir, report.started_at)
+    path = unique_path(directory, f"{_slug(report.suite)}-{_slug(report.runner)}", ".json")
     path.write_text(
         json.dumps(report.to_dict(), indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",

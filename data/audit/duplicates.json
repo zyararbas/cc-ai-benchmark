@@ -1,0 +1,427 @@
+{
+  "source_dir": "/Users/aykutyararbas/projects/cc-ai-benchmark/outputs",
+  "item_count": 689,
+  "cluster_count": 18,
+  "stem_threshold": 0.93,
+  "answer_threshold": 0.75,
+  "tally": {
+    "DISTINCT": 3,
+    "IDENTICAL": 1,
+    "REVIEW": 5,
+    "SHUFFLED": 9
+  },
+  "retire_uids": [
+    "scoped_questions_16.json:q_33",
+    "scoped_questions_16.json:q_35",
+    "scoped_questions_16.json:q_36",
+    "scoped_questions_16.json:q_38",
+    "scoped_questions_16.json:q_40",
+    "scoped_questions_16.json:q_47",
+    "scoped_questions_16.json:q_48",
+    "scoped_questions_16.json:q_53",
+    "scoped_questions_19.json:q_20",
+    "scoped_questions_19.json:q_51"
+  ],
+  "item_count_after_dedup": 679,
+  "needs_adjudication": 5,
+  "clusters": [
+    {
+      "verdict": "REVIEW",
+      "scope": "Commercial Package Policy",
+      "question": "Which of the following conditions states that the first-named insured is authorized to make changes in the terms of the policy with the consent of the insurance company?",
+      "keep": null,
+      "retire": [],
+      "members": [
+        {
+          "uid": "scoped_questions_10.json:q_6",
+          "answer": "C",
+          "answer_text": "Changes condition",
+          "has_explanation": true
+        },
+        {
+          "uid": "scoped_questions_10.json:q_17",
+          "answer": "D",
+          "answer_text": "The changes condition",
+          "has_explanation": true
+        }
+      ]
+    },
+    {
+      "verdict": "REVIEW",
+      "scope": "Commercial Inland Marine Insurance",
+      "question": "The bailee policy pays",
+      "keep": null,
+      "retire": [],
+      "members": [
+        {
+          "uid": "scoped_questions_12.json:q_15",
+          "answer": "D",
+          "answer_text": "the customer",
+          "has_explanation": true
+        },
+        {
+          "uid": "scoped_questions_12.json:q_29",
+          "answer": "C",
+          "answer_text": "the bailor (customer)",
+          "has_explanation": true
+        }
+      ]
+    },
+    {
+      "verdict": "DISTINCT",
+      "scope": "Farm insurance",
+      "question": "Perils covered under the covered causes of loss form—basic section include all of the following EXCEPT",
+      "keep": null,
+      "retire": [],
+      "members": [
+        {
+          "uid": "scoped_questions_13.json:q_5",
+          "answer": "A",
+          "answer_text": "drowning of covered livestock",
+          "has_explanation": false
+        },
+        {
+          "uid": "scoped_questions_13.json:q_6",
+          "answer": "D",
+          "answer_text": "pollutants or contaminants",
+          "has_explanation": false
+        }
+      ]
+    },
+    {
+      "verdict": "SHUFFLED",
+      "scope": "Crime Insurance_",
+      "question": "The Inside the Premises—Robbery or Safe Burglary of Other Property insuring agreement in the commercial crime policy covers which one of the following perils?",
+      "keep": "scoped_questions_16.json:q_19",
+      "retire": [
+        "scoped_questions_16.json:q_36"
+      ],
+      "members": [
+        {
+          "uid": "scoped_questions_16.json:q_19",
+          "answer": "A",
+          "answer_text": "Safe burglary by a security guard while a store is closed",
+          "has_explanation": true
+        },
+        {
+          "uid": "scoped_questions_16.json:q_36",
+          "answer": "B",
+          "answer_text": "Safe burglary by a security guard while a store is closed",
+          "has_explanation": true
+        }
+      ]
+    },
+    {
+      "verdict": "SHUFFLED",
+      "scope": "Crime Insurance_",
+      "question": "After Acme Construction wins a bid to build an office complex, the owner demands that Acme purchase a payment bond to cover electrical and heating subcontractors. What guarantee is the owner seeking from Acme Construction by demanding the payment bond?",
+      "keep": "scoped_questions_16.json:q_20",
+      "retire": [
+        "scoped_questions_16.json:q_53"
+      ],
+      "members": [
+        {
+          "uid": "scoped_questions_16.json:q_20",
+          "answer": "C",
+          "answer_text": "The principal will complete and deliver the work free of any liens or encumbrances.",
+          "has_explanation": true
+        },
+        {
+          "uid": "scoped_questions_16.json:q_53",
+          "answer": "D",
+          "answer_text": "The principal will complete and deliver the work free of any liens or encumbrances.",
+          "has_explanation": true
+        }
+      ]
+    },
+    {
+      "verdict": "SHUFFLED",
+      "scope": "Crime Insurance_",
+      "question": "Which of the following statements regarding employee theft is NOT true?",
+      "keep": "scoped_questions_16.json:q_21",
+      "retire": [
+        "scoped_questions_16.json:q_40"
+      ],
+      "members": [
+        {
+          "uid": "scoped_questions_16.json:q_21",
+          "answer": "A",
+          "answer_text": "Coverage is not canceled for employees causing the loss.",
+          "has_explanation": true
+        },
+        {
+          "uid": "scoped_questions_16.json:q_40",
+          "answer": "B",
+          "answer_text": "Coverage is not canceled for employees causing the loss.",
+          "has_explanation": true
+        }
+      ]
+    },
+    {
+      "verdict": "SHUFFLED",
+      "scope": "Crime Insurance_",
+      "question": "Which one of the following losses would be covered under the Inside the Premises—Robbery or Safe Burglary of Other Property insuring agreement in the commercial crime policy?",
+      "keep": "scoped_questions_16.json:q_23",
+      "retire": [
+        "scoped_questions_16.json:q_47"
+      ],
+      "members": [
+        {
+          "uid": "scoped_questions_16.json:q_23",
+          "answer": "C",
+          "answer_text": "The safe at a furniture store is taken after the store is burglarized.",
+          "has_explanation": true
+        },
+        {
+          "uid": "scoped_questions_16.json:q_47",
+          "answer": "A",
+          "answer_text": "The safe at a furniture store is taken after the store is burglarized.",
+          "has_explanation": true
+        }
+      ]
+    },
+    {
+      "verdict": "SHUFFLED",
+      "scope": "Crime Insurance_",
+      "question": "In commercial crime insurance, shoplifting is classified as",
+      "keep": "scoped_questions_16.json:q_24",
+      "retire": [
+        "scoped_questions_16.json:q_35"
+      ],
+      "members": [
+        {
+          "uid": "scoped_questions_16.json:q_24",
+          "answer": "B",
+          "answer_text": "theft",
+          "has_explanation": true
+        },
+        {
+          "uid": "scoped_questions_16.json:q_35",
+          "answer": "A",
+          "answer_text": "theft",
+          "has_explanation": true
+        }
+      ]
+    },
+    {
+      "verdict": "SHUFFLED",
+      "scope": "Crime Insurance_",
+      "question": "A hotel has added a guest's property endorsement to its commercial crime coverage form. A guest at the hotel removes her jewelry and leaves it wrapped in a towel at the front desk while she uses some exercise equipment. When she finishes her workout, the jewelry is gone. The policy provides",
+      "keep": "scoped_questions_16.json:q_30",
+      "retire": [
+        "scoped_questions_16.json:q_38"
+      ],
+      "members": [
+        {
+          "uid": "scoped_questions_16.json:q_30",
+          "answer": "C",
+          "answer_text": "coverage for the guest’s jewelry in the amount shown on the declarations page",
+          "has_explanation": true
+        },
+        {
+          "uid": "scoped_questions_16.json:q_38",
+          "answer": "A",
+          "answer_text": "coverage for the guest’s jewelry in the amount shown on the declarations page",
+          "has_explanation": true
+        }
+      ]
+    },
+    {
+      "verdict": "SHUFFLED",
+      "scope": "Crime Insurance_",
+      "question": "How is burglary defined?",
+      "keep": "scoped_questions_16.json:q_32",
+      "retire": [
+        "scoped_questions_16.json:q_48"
+      ],
+      "members": [
+        {
+          "uid": "scoped_questions_16.json:q_32",
+          "answer": "D",
+          "answer_text": "Taking of property from inside the premises by a person unlawfully entering or leaving the premises as evidenced by marks of forcible entry or exit",
+          "has_explanation": true
+        },
+        {
+          "uid": "scoped_questions_16.json:q_48",
+          "answer": "A",
+          "answer_text": "Taking of property from inside the premises by a person unlawfully entering or leaving the premises as evidenced by marks of forcible entry or exit",
+          "has_explanation": true
+        }
+      ]
+    },
+    {
+      "verdict": "SHUFFLED",
+      "scope": "Crime Insurance_",
+      "question": "Who are the 3 parties to a surety bond?",
+      "keep": "scoped_questions_16.json:q_46",
+      "retire": [
+        "scoped_questions_16.json:q_33"
+      ],
+      "members": [
+        {
+          "uid": "scoped_questions_16.json:q_33",
+          "answer": "A",
+          "answer_text": "Principal, obligee, and surety",
+          "has_explanation": false
+        },
+        {
+          "uid": "scoped_questions_16.json:q_46",
+          "answer": "C",
+          "answer_text": "Principal, obligee, and surety",
+          "has_explanation": true
+        }
+      ]
+    },
+    {
+      "verdict": "SHUFFLED",
+      "scope": "Businessowners Policy",
+      "question": "Which of the following losses would be excluded under the property coverage of the BOP?",
+      "keep": "scoped_questions_19.json:q_14",
+      "retire": [
+        "scoped_questions_19.json:q_20"
+      ],
+      "members": [
+        {
+          "uid": "scoped_questions_19.json:q_14",
+          "answer": "B",
+          "answer_text": "All of these are excluded.",
+          "has_explanation": false
+        },
+        {
+          "uid": "scoped_questions_19.json:q_20",
+          "answer": "D",
+          "answer_text": "All of these are excluded.",
+          "has_explanation": false
+        }
+      ]
+    },
+    {
+      "verdict": "REVIEW",
+      "scope": "Businessowners Policy",
+      "question": "Which of the following endorsements covers loss or damage to a property caused by an interruption in water, communication, or power supply service?",
+      "keep": null,
+      "retire": [],
+      "members": [
+        {
+          "uid": "scoped_questions_19.json:q_24",
+          "answer": "A",
+          "answer_text": "The utility services—direct damage coverage endorsement",
+          "has_explanation": false
+        },
+        {
+          "uid": "scoped_questions_19.json:q_46",
+          "answer": "B",
+          "answer_text": "Utility services—direct damage coverage endorsement",
+          "has_explanation": true
+        }
+      ]
+    },
+    {
+      "verdict": "DISTINCT",
+      "scope": "Businessowners Policy",
+      "question": "All of the following are considered additional coverages in the Businessowners Policy EXCEPT",
+      "keep": null,
+      "retire": [],
+      "members": [
+        {
+          "uid": "scoped_questions_19.json:q_29",
+          "answer": "B",
+          "answer_text": "mechanical breakdown",
+          "has_explanation": true
+        },
+        {
+          "uid": "scoped_questions_19.json:q_44",
+          "answer": "B",
+          "answer_text": "trees and detached signs",
+          "has_explanation": true
+        }
+      ]
+    },
+    {
+      "verdict": "REVIEW",
+      "scope": "Businessowners Policy",
+      "question": "Which of the following losses would be covered under the businessowners policy?",
+      "keep": null,
+      "retire": [],
+      "members": [
+        {
+          "uid": "scoped_questions_19.json:q_5",
+          "answer": "D",
+          "answer_text": "Loss caused by a power failure that occurs on the insured’s premises",
+          "has_explanation": false
+        },
+        {
+          "uid": "scoped_questions_19.json:q_63",
+          "answer": "A",
+          "answer_text": "Loss caused by a power failure that occurs on the insured's premise",
+          "has_explanation": true
+        }
+      ]
+    },
+    {
+      "verdict": "IDENTICAL",
+      "scope": "Businessowners Policy",
+      "question": "Which of the following is an optional coverage in the businessowners policy that may require that the insured to pay an additional premium?",
+      "keep": "scoped_questions_19.json:q_50",
+      "retire": [
+        "scoped_questions_19.json:q_51"
+      ],
+      "members": [
+        {
+          "uid": "scoped_questions_19.json:q_50",
+          "answer": "D",
+          "answer_text": "Equipment breakdown",
+          "has_explanation": true
+        },
+        {
+          "uid": "scoped_questions_19.json:q_51",
+          "answer": "D",
+          "answer_text": "Equipment breakdown",
+          "has_explanation": true
+        }
+      ]
+    },
+    {
+      "verdict": "DISTINCT",
+      "scope": "Businessowners Policy",
+      "question": "The standard deductible for the businessowners policy is",
+      "keep": null,
+      "retire": [],
+      "members": [
+        {
+          "uid": "scoped_questions_19.json:q_7",
+          "answer": "D",
+          "answer_text": "$500",
+          "has_explanation": false
+        },
+        {
+          "uid": "scoped_questions_19.json:q_56",
+          "answer": "C",
+          "answer_text": "civil commotion",
+          "has_explanation": true
+        }
+      ]
+    },
+    {
+      "verdict": "REVIEW",
+      "scope": "Workers compensation_",
+      "question": "Which of these statements regarding workers' compensation benefits is NOT correct?",
+      "keep": null,
+      "retire": [],
+      "members": [
+        {
+          "uid": "scoped_questions_20.json:q_1",
+          "answer": "C",
+          "answer_text": "Payment of medical benefits is very limited in terms of the types of services covered and the length of time benefits are paid.",
+          "has_explanation": false
+        },
+        {
+          "uid": "scoped_questions_20.json:q_34",
+          "answer": "C",
+          "answer_text": "Disability benefits pay the full amount of the employee's lost income if a spouse, partner or relative does not exist.",
+          "has_explanation": true
+        }
+      ]
+    }
+  ]
+}

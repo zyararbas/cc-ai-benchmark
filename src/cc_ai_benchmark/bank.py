@@ -69,6 +69,29 @@ class Item:
         return sorted(self.choices)
 
 
+def read_records(path: Path) -> list[dict[str, Any]]:
+    """Every object in a raw question file, in order, whatever its layout.
+
+    These files are JSON Lines under a `.json` extension, which an editor set to
+    format on save will happily pretty-print into a stream of multi-line
+    objects. Reading a line at a time then dies on the first `{`. Order is the
+    only thing carrying the sequence numbers, so this parses the whole text as a
+    stream of concatenated values rather than rejecting the reformatted layout.
+    """
+    text = path.read_text(encoding="utf-8")
+    decoder = json.JSONDecoder()
+    records: list[dict[str, Any]] = []
+    index = 0
+    while index < len(text):
+        while index < len(text) and text[index].isspace():
+            index += 1
+        if index >= len(text):
+            break
+        record, index = decoder.raw_decode(text, index)
+        records.append(record)
+    return records
+
+
 def build_bank(raw_dir: Path = RAW_DIR, audit_path: Path = AUDIT_PATH) -> list[Item]:
     """Materialize the bank from the raw extraction plus the duplicate manifest."""
     retire: set[str] = set()
@@ -96,13 +119,9 @@ def build_bank(raw_dir: Path = RAW_DIR, audit_path: Path = AUDIT_PATH) -> list[I
     def _read(path: Path, make_id, scope_of, ref_of) -> list[Item]:
         out: list[Item] = []
         seq = 0
-        for line in path.read_text(encoding="utf-8").splitlines():
-            line = line.strip()
-            if not line:
-                continue
-            raw = json.loads(line)
+        for raw in read_records(path):
             uid = f"{path.name}:{raw['id']}"
-            # seq advances before any skip, so an id is a line position and
+            # seq advances before any skip, so an id is a record position and
             # dropping an item never renames the ones after it.
             seq += 1
             if uid in retire:
@@ -113,7 +132,11 @@ def build_bank(raw_dir: Path = RAW_DIR, audit_path: Path = AUDIT_PATH) -> list[I
             if raw.get("retired"):
                 continue
             ref = ref_of(raw)
-            flags = ["needs-review"] if uid in review else []
+            # Two ways to earn the same flag: the duplicate audit put the item
+            # in an unadjudicated cluster, or the extraction could not read its
+            # marker and left `answer` null. Grading compares against that key,
+            # so an unflagged null scores every model wrong without saying why.
+            flags = ["needs-review"] if uid in review or raw.get("needs_review") else []
             # No source document means C1 cannot be run on this item. Say so on
             # the item rather than leaving a caller to infer it from an empty
             # ref and quietly grade an oracle run it never really had.

@@ -141,3 +141,25 @@ def test_stratified_sampling_covers_the_general_scope():
     assert len(picked) == 200
     assert any(i.scope == GENERAL_SCOPE for i in picked)
 
+
+def test_an_unreadable_marker_is_flagged_not_silently_graded(tmp_path):
+    """A null key matches no letter, so an unflagged item scores every model wrong."""
+    raw = tmp_path / "questions"
+    raw.mkdir()
+    _questions(
+        raw / "scoped_questions_1.json",
+        [
+            _row("q_1", scope="Contracts", ref="1. Contracts.docx"),
+            {
+                **_row("q_2", scope="Contracts", ref="1. Contracts.docx"),
+                "answer": None,
+                "needs_review": True,
+                "review_note": "marker column clipped",
+            },
+        ],
+    )
+    items = build_bank(raw, tmp_path / "missing.json")
+    flagged = {i.id: i.flags for i in items}
+    assert "needs-review" not in flagged["pc-01-0001"]
+    assert "needs-review" in flagged["pc-01-0002"]
+    assert [i.id for i in select(items)] == ["pc-01-0001"]

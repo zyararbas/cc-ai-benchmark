@@ -23,7 +23,10 @@ htmlcov/
 # Editors / OS
 .DS_Store
 .idea/
-.vscode/
+.vscode/*
+# ...except the association that stops an editor pretty-printing the JSONL
+# question files. It is a property of the repository, not of one machine.
+!.vscode/settings.json
 
 # Benchmark run artifacts (see outputs/.gitignore for the keep rule)
 
@@ -33,7 +36,7 @@ config/local.env
 # Licensed source material and the bank derived from it.
 #
 # This repository is PUBLIC. data/documents/ holds 34MB of third-party P&C
-# exam-prep books, and data/bank/pc-bank.jsonl holds 679 question stems copied
+# exam-prep books, and data/bank/pc-bank.jsonl holds 842 question stems copied
 # verbatim out of them. Redistributing either is a licensing question nobody
 # has answered yet, and a public git history is not reversible.
 #

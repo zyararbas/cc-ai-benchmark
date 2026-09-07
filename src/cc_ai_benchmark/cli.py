@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import collections
 import sys
 from pathlib import Path
 
@@ -190,8 +191,11 @@ def cmd_build_bank() -> int:
 
     items = build_bank()
     path = write_bank(items)
-    flagged = sum(1 for i in items if i.flags)
-    print(f"built   {len(items)} items ({flagged} flagged needs-review)")
+    # Counted per flag, not per item: "flagged" lumped `no-source` in with
+    # `needs-review` and reported 100 items awaiting a reviewer when none were.
+    tally = collections.Counter(flag for item in items for flag in item.flags)
+    detail = ", ".join(f"{count} {flag}" for flag, count in sorted(tally.items())) or "none flagged"
+    print(f"built   {len(items)} items ({detail})")
     print(f"bank    {path}")
     return 0
 

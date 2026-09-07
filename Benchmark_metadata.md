@@ -3,10 +3,11 @@
 Ground-truth question sets extracted from Property & Casualty insurance licensing
 material, for evaluating multiple-choice answering by AI models.
 
-Two collections live in `outputs/`:
+Two collections live in `data/documents/questions/`, and `cc-ai-benchmark
+build-bank` materializes them into `data/bank/pc-bank.jsonl`:
 
 **Questions** — `questions_1.json` — 100 items  
-**Scoped questions** — `scoped_questions_[1..23].json` — 689 items across 23 files  
+**Scoped questions** — `scoped_questions_[1..23].json` — 742 items across 23 files  
 
 ---
 
@@ -57,10 +58,10 @@ Adds `scope` and `ref` after `explanation`; otherwise identical to the collectio
 
 | File | Scope | Items | `explanation: null` |
 |---:|---|---:|---:|
-| 1 | Insurance _ Property and casualty | 10 | 0 |
-| 2 | Contracts | 10 | 0 |
-| 3 | Basics of Property and Casualty Insurance | 10 | 0 |
-| 4 | Basics of Property Insurane Activities | 10 | 0 |
+| 1 | Insurance _ Property and casualty | 20 | 0 |
+| 2 | Contracts (1 item without a scope) | 15 | 4 |
+| 3 | Basics of Property and Casualty Insurance | 26 | 16 |
+| 4 | Basics of Property Insurance Activities | 44 | 13 |
 | 5 | Basics of Casualty Insurance | 10 | 0 |
 | 6 | Dwelling Insurance | 29 | 29 |
 | 7 | Homeowners Insurance | 41 | 41 |
@@ -72,19 +73,24 @@ Adds `scope` and `ref` after `explanation`; otherwise identical to the collectio
 | 13 | Farm insurance | 23 | 12 |
 | 14 | Equipment Breakdown Risks & Protection | 22 | 3 |
 | 15 | Commercial liability insurance | 51 | 20 |
-| 16 | Crime Insurance_ | 68 | 9 |
+| 16 | Crime Insurance_ | 60 | 8 |
 | 17 | Commercial Auto Insurance | 50 | 11 |
 | 18 | Miscellaneous Commercial Insurance | 34 | 5 |
-| 19 | Businessowners Policy | 63 | 24 |
+| 19 | Businessowners Policy | 59 | 23 |
 | 20 | Workers compensation_ | 35 | 7 |
 | 21 | California Laws, Rules. and Regulations for Property & Casualty Insurance | 29 | 19 |
 | 22 | California Laws, Rules, and Regulations for Property  Insurance Only | 7 | 0 |
 | 23 | California Laws, Rules, and Regulations for Casualty  Insurance Only | 10 | 1 |
-| | **Total** | **689** | **240** |
+| | **Total** | **742** | **271** |
 
 ### Aggregate statistics
 
-- 689 items across 23 files, all with exactly 4 choices (A–D)
-- Answer distribution: **A 178, B 183, C 176, D 152** — no positional bias of concern
-- `explanation` is `null` on 240 items (34.8%), non-null on 449
-- Zero null answers, zero multi-answer items, zero `needs_review` flags
+- 742 scoped items across 23 files, all with exactly 4 choices (A-D)
+- Answer distribution: **A 199, B 189, C 188, D 166** -- no positional bias of concern
+- `explanation` is `null` on 271 items (36.5%), non-null on 471
+- A further 100 general items build under `pc-gen01-`. They carry no `scope`
+  and no `ref`, so they are flagged `no-source` and C1 cannot be run on them.
+  Bank total 842.
+- 41 retired questions are held as tombstones in the raw files. Each holds its
+  sequence slot so no live id ever shifts, and none is built into the bank.
+- Zero null answers, zero multi-answer items, zero items awaiting review

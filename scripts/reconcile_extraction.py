@@ -11,8 +11,8 @@ old file's line order is authoritative. Survivors stay where they are, new
 questions are appended, and removed ones are left as tombstones holding their
 slot.
 
-    python scripts/reconcile_extraction.py 1 --new work/1/extracted.jsonl
-    python scripts/reconcile_extraction.py 1 --new work/1/extracted.jsonl --apply
+    python scripts/reconcile_extraction.py 1 --new data/documents/work/1/extracted.jsonl
+    python scripts/reconcile_extraction.py 1 --new data/documents/work/1/extracted.jsonl --apply
 """
 
 from __future__ import annotations
@@ -24,6 +24,8 @@ import shutil
 from pathlib import Path
 from typing import Any
 
+from cc_ai_benchmark.bank import read_records
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 RAW_DIR = REPO_ROOT / "data" / "documents" / "questions"
 
@@ -34,12 +36,6 @@ PUNCT = re.compile(r"[^\w\s]")
 def normalize(text: str) -> str:
     """Match on meaning-preserving differences only: case, spacing, punctuation."""
     return WHITESPACE.sub(" ", PUNCT.sub(" ", (text or "").casefold())).strip()
-
-
-def read_jsonl(path: Path) -> list[dict[str, Any]]:
-    return [
-        json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()
-    ]
 
 
 def write_jsonl(path: Path, records: list[dict[str, Any]]) -> None:
@@ -130,7 +126,7 @@ def main() -> int:
         print(f"Copy the extraction into place directly:\n  cp {args.new} {target}")
         return 0
 
-    old, new = read_jsonl(target), read_jsonl(args.new)
+    old, new = read_records(target), read_records(args.new)
     result = reconcile(old, new)
 
     print(f"existing  {target.name}  {len(old)} records")

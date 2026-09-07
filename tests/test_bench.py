@@ -104,13 +104,20 @@ def test_adapter_converts_exceptions_into_responses():
 
     class Exploding(BaseAdapter):
         name = "exploding"
+        # "upstream timeout" is a retryable signature, so without this the
+        # adapter correctly sleeps its whole backoff schedule on every item and
+        # the test spends a minute proving something it does not measure.
+        backoff_base = 0.0
 
         def _invoke(self, query: Query) -> Response:
             raise RuntimeError("upstream timeout")
 
-    run = run_system(Exploding(), ITEMS, "C0")
+    adapter = Exploding()
+    run = run_system(adapter, ITEMS, "C0")
     assert all(r.outcome is Outcome.ERROR for r in run.results)
     assert "upstream timeout" in run.results[0].error
+    # A persistent failure is only recorded once the retries are spent.
+    assert all(r.attempts == adapter.max_attempts for r in run.results)
 
 
 def test_adapter_isolation_no_state_leaks_between_items():
@@ -335,3 +342,136 @@ def test_export_total_tokens_counts_cached_prompt_tokens_once():
     assert row["prompt_tokens"] == 100
     assert row["cached_prompt_tokens"] == 900
     assert row["total_tokens"] == 1020
+
+
+# The real string Gemini returns for a per-minute token quota. Kept verbatim
+# because a paraphrase is what let a bare "billing" term in the terminal-error
+# pattern classify every one of these as permanent.
+GEMINI_429 = (
+    "ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': "
+    "'You exceeded your current quota, please check your plan and billing details. "
+    "For more information on this error, head to: "
+    "https://ai.google.dev/gemini-api/docs/rate-limits.\n* Quota exceeded for metric: "
+    "generativelanguage.googleapis.com/generate_content_paid_tier_2_input_token_count, "
+    "limit: 3000000, model: gemini-3.8-flash\nPlease retry in 38.102336305s.', "
+    "'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': "
+    "'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '38s'}]}}"
+)
+
+OPENAI_DEAD = (
+    "RateLimitError: Error code: 429 - {'error': {'message': 'You have no credits "
+    "remaining. Add credits to continue using the API at "
+    "https://platform.openai.com/settings/organization/billing/.', "
+    "'type': 'insufficient_quota', 'code': 'credit_balance_exhausted'}}"
+)
+
+
+def test_gemini_token_quota_is_retryable_despite_naming_billing():
+    from cc_ai_benchmark.adapters.base import retry_after, retryable
+
+    assert retryable(GEMINI_429)
+    assert retry_after(GEMINI_429) == 38.102336305
+
+
+def test_dead_openai_account_is_not_retried():
+    from cc_ai_benchmark.adapters.base import retryable
+
+    assert not retryable(OPENAI_DEAD)
+
+
+def test_retry_after_is_capped_and_absent_when_unstated():
+    from cc_ai_benchmark.adapters.base import retry_after
+
+    assert retry_after("Retry-After: 9999", cap=90.0) == 90.0
+    assert retry_after("ClientError: 503 UNAVAILABLE") is None
+
+
+def test_retryable_classifies_throttles_but_not_dead_quota():
+    from cc_ai_benchmark.adapters.base import retryable
+
+    assert retryable("ClientError: 429 RESOURCE_EXHAUSTED. quota exceeded")
+    assert retryable("APIError: 503 UNAVAILABLE")
+    assert retryable("ReadTimeout: request timed out")
+    # Out of money does not recover inside a sweep; retrying only burns the clock.
+    assert not retryable("RateLimitError: 429 insufficient_quota, no credits remaining")
+    assert not retryable("BadRequestError: 400 invalid model id")
+
+
+def test_answer_retries_a_throttle_then_succeeds():
+    from cc_ai_benchmark.adapters.base import BaseAdapter, Query, Response
+    from cc_ai_benchmark.bank import Item
+
+    class Flaky(BaseAdapter):
+        backoff_base = 0.0  # no real sleeping in tests
+
+        def __init__(self):
+            self.calls = 0
+
+        def _invoke(self, query):
+            self.calls += 1
+            if self.calls < 3:
+                raise RuntimeError("429 RESOURCE_EXHAUSTED")
+            return Response(text='{"answer": "A", "confidence": 1.0}')
+
+    item = Item(
+        id="x-1", question="q", choices={"A": "a", "B": "b"}, answer="A", scope="s", ref="r.docx"
+    )
+    adapter = Flaky()
+    response = adapter.answer(Query(item=item, condition="C0", prompt="q"))
+    assert response.error is None
+    assert response.attempts == 3
+
+
+def test_answer_gives_up_and_records_the_error():
+    from cc_ai_benchmark.adapters.base import BaseAdapter, Query
+    from cc_ai_benchmark.bank import Item
+
+    class Dead(BaseAdapter):
+        backoff_base = 0.0
+        max_attempts = 3
+
+        def _invoke(self, query):
+            raise RuntimeError("429 RESOURCE_EXHAUSTED")
+
+    item = Item(
+        id="x-1", question="q", choices={"A": "a", "B": "b"}, answer="A", scope="s", ref="r.docx"
+    )
+    response = Dead().answer(Query(item=item, condition="C0", prompt="q"))
+    assert response.attempts == 3
+    assert "RESOURCE_EXHAUSTED" in response.error
+
+
+def _item():
+    from cc_ai_benchmark.bank import Item
+
+    return Item(
+        id="x-1",
+        question="q",
+        choices={"A": "a", "B": "b", "C": "c", "D": "d"},
+        answer="B",
+        scope="s",
+        ref="r.docx",
+    )
+
+
+def test_answer_keeps_the_template_brackets():
+    """The prompt shows `<A|B|C|D>`; models sometimes answer `<B>` literally."""
+    from cc_ai_benchmark.grading import Outcome, grade
+
+    verdict = grade(_item(), '{"answer": "<B>", "confidence": 1.0, "basis": "..."}')
+    assert verdict.outcome is Outcome.CORRECT
+    assert verdict.parsed == "B"
+
+
+def test_string_null_is_an_abstention_not_a_parse_failure():
+    from cc_ai_benchmark.grading import Outcome, grade
+
+    verdict = grade(_item(), '{"answer": "null", "confidence": 0.0, "basis": "not covered"}')
+    assert verdict.outcome is Outcome.ABSTAINED
+    assert verdict.parsed is None
+
+
+def test_decoration_stripping_cannot_invent_a_letter():
+    from cc_ai_benchmark.grading import Outcome, grade
+
+    assert grade(_item(), '{"answer": "<Z>", "confidence": 1.0}').outcome is Outcome.PARSE_FAILURE

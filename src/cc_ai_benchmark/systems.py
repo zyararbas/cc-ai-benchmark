@@ -40,4 +40,11 @@ def build(name: str, config: dict[str, Any] | None = None):
             "set the exact provider snapshot id first"
         )
     adapter_name = spec.pop("adapter")
-    return get_adapter(adapter_name, **spec)
+    # Declared per system rather than per adapter class: safe in-flight count is
+    # a property of the endpoint and the prompt size, and a 107k-token grounded
+    # call exhausts a token-per-minute quota far faster than a 160-token one.
+    concurrency = spec.pop("concurrency", None)
+    adapter = get_adapter(adapter_name, **spec)
+    if concurrency is not None:
+        adapter.concurrency = int(concurrency)
+    return adapter

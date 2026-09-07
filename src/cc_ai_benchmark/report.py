@@ -57,7 +57,7 @@ def print_table(report: dict[str, Any]) -> None:
     width = max((len(r["system"]) for r in rows), default=10)
     header = (
         f"{'system'.ljust(width)}  cond    n   acc    95% CI        "
-        f"cov    risk   absn  parse  err     cost    $/correct   p50ms"
+        f"cov    risk   absn  parse  err  thr     cost    $/correct   p50ms"
     )
     print(header)
     print("-" * len(header))
@@ -70,9 +70,15 @@ def print_table(report: dict[str, Any]) -> None:
             f"[{lo:.3f},{hi:.3f}] "
             f"{m['coverage_accuracy']:>6.3f} {m['risk_weighted']:>6.3f} "
             f"{m['abstention_rate']:>5.2f} {m['parse_failures']:>5} {m['errors']:>4} "
+            f"{m.get('throttled_items', 0):>4} "
             f"{_fmt_money(m['cost_usd'])} {_fmt_money(m['cost_per_correct'])} "
             f"{m['latency_p50_ms']:>7.0f}"
         )
     print()
     print("acc = correct/all   cov = correct/answered   risk = (correct-incorrect)/all")
     print("A high abstention rate with a high risk score is the safe profile for insurance.")
+    if any(r["metrics"]["errors"] for r in rows):
+        print(
+            "\nWARNING: rows with err > 0 have transport failures scored as wrong answers. "
+            "Their accuracy is a lower bound, not a measurement."
+        )

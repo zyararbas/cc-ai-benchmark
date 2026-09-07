@@ -38,6 +38,19 @@ _ABSTAIN = re.compile(
 )
 
 
+#: Decoration a model wraps around an answer that is otherwise exactly right.
+#: `"<B>"` is the commonest: the prompt shows the contract as `<A|B|C|D>` and
+#: the model keeps the angle brackets. Scoring that as unparseable measures the
+#: harness, not the system -- and it lands hardest on the grounded prompt, which
+#: carries a third field and gives the model more chances to be literal.
+_DECORATION = "\"'`<>()[]{} .:*"
+
+#: A JSON null spelled as a string. The contract asks for `null` and the model
+#: sends `"null"`; that is an abstention, and recording it as a parse failure
+#: throws away the one signal the abstention metrics exist to measure.
+_NULLISH = {"NULL", "NONE", "N/A", "NA", "UNKNOWN", ""}
+
+
 def _norm(text: str) -> str:
     return " ".join(str(text).split()).casefold().strip(" .")
 
@@ -57,9 +70,9 @@ def _from_json(text: str, item: Item) -> Grade | None:
         raw = payload.get("answer")
         confidence = payload.get("confidence")
         confidence = float(confidence) if isinstance(confidence, int | float) else None
-        if raw is None:
+        candidate = str(raw).strip().strip(_DECORATION).upper()
+        if raw is None or candidate in _NULLISH:
             return Grade(Outcome.ABSTAINED, None, confidence)
-        candidate = str(raw).strip().upper()
         if candidate in _letters(item):
             return Grade(_verdict(candidate, item), candidate, confidence)
         matched = _match_choice_text(str(raw), item)

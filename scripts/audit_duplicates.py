@@ -29,6 +29,8 @@ import sys
 import unicodedata
 from pathlib import Path
 
+from cc_ai_benchmark.bank import read_records
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 BANK_GLOB = "scoped_questions_*.json"
 STEM_THRESHOLD = 0.93
@@ -58,11 +60,7 @@ def load(directory: Path) -> list[dict]:
         directory.glob(BANK_GLOB), key=lambda p: int(re.search(r"_(\d+)\.json$", p.name).group(1))
     )
     for path in paths:
-        for line in path.read_text(encoding="utf-8").splitlines():
-            line = line.strip()
-            if not line:
-                continue
-            raw = json.loads(line)
+        for raw in read_records(path):
             # Tombstones hold a sequence slot so ids do not shift; they are not
             # live questions and must not be matched against, or a retired item
             # reappears as a duplicate of the question that replaced it.

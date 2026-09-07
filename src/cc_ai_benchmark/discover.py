@@ -35,8 +35,12 @@ def anthropic_models() -> list[Row]:
         raise ProviderUnavailable(
             "anthropic SDK not installed: pip install -e '.[anthropic]'"
         ) from exc
+    # Hold the client in a name: these SDKs close their transport when the
+    # object is collected, and a temporary `Client().models.list()` can be
+    # collected mid-pagination, failing with "client has been closed".
+    client = Anthropic()
     rows = []
-    for model in Anthropic().models.list(limit=100):
+    for model in client.models.list(limit=100):
         rows.append(
             {
                 "id": model.id,
@@ -56,8 +60,9 @@ def gemini_models() -> list[Row]:
         raise ProviderUnavailable(
             "google-genai SDK not installed: pip install -e '.[gemini]'"
         ) from exc
+    client = genai.Client()
     rows = []
-    for model in genai.Client().models.list():
+    for model in client.models.list():
         actions = getattr(model, "supported_actions", None) or []
         if actions and "generateContent" not in actions:
             continue
@@ -82,8 +87,9 @@ def openai_models() -> list[Row]:
         raise ProviderUnavailable("openai SDK not installed: pip install -e '.[openai]'") from exc
     import datetime as _dt
 
+    client = OpenAI()
     rows = []
-    for model in OpenAI().models.list():
+    for model in client.models.list():
         created = getattr(model, "created", None)
         stamp = ""
         if created:

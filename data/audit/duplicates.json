@@ -1,13 +1,13 @@
 {
   "source_dir": "/Users/aykutyararbas/projects/cc-ai-benchmark/data/documents/questions",
-  "item_count": 699,
-  "cluster_count": 18,
+  "item_count": 752,
+  "cluster_count": 17,
   "stem_threshold": 0.93,
   "answer_threshold": 0.75,
   "tally": {
     "DISTINCT": 3,
     "IDENTICAL": 1,
-    "REVIEW": 5,
+    "REVIEW": 4,
     "SHUFFLED": 9
   },
   "retire_uids": [
@@ -22,8 +22,8 @@
     "scoped_questions_19.json:q_20",
     "scoped_questions_19.json:q_51"
   ],
-  "item_count_after_dedup": 689,
-  "needs_adjudication": 5,
+  "item_count_after_dedup": 742,
+  "needs_adjudication": 4,
   "clusters": [
     {
       "verdict": "REVIEW",
@@ -296,27 +296,6 @@
       ]
     },
     {
-      "verdict": "REVIEW",
-      "scope": "Businessowners Policy",
-      "question": "Which of the following endorsements covers loss or damage to a property caused by an interruption in water, communication, or power supply service?",
-      "keep": null,
-      "retire": [],
-      "members": [
-        {
-          "uid": "scoped_questions_19.json:q_24",
-          "answer": "A",
-          "answer_text": "The utility services—direct damage coverage endorsement",
-          "has_explanation": false
-        },
-        {
-          "uid": "scoped_questions_19.json:q_46",
-          "answer": "B",
-          "answer_text": "Utility services—direct damage coverage endorsement",
-          "has_explanation": true
-        }
-      ]
-    },
-    {
       "verdict": "DISTINCT",
       "scope": "Businessowners Policy",
       "question": "All of the following are considered additional coverages in the Businessowners Policy EXCEPT",
@@ -333,27 +312,6 @@
           "uid": "scoped_questions_19.json:q_44",
           "answer": "B",
           "answer_text": "trees and detached signs",
-          "has_explanation": true
-        }
-      ]
-    },
-    {
-      "verdict": "REVIEW",
-      "scope": "Businessowners Policy",
-      "question": "Which of the following losses would be covered under the businessowners policy?",
-      "keep": null,
-      "retire": [],
-      "members": [
-        {
-          "uid": "scoped_questions_19.json:q_5",
-          "answer": "D",
-          "answer_text": "Loss caused by a power failure that occurs on the insured’s premises",
-          "has_explanation": false
-        },
-        {
-          "uid": "scoped_questions_19.json:q_63",
-          "answer": "A",
-          "answer_text": "Loss caused by a power failure that occurs on the insured's premise",
           "has_explanation": true
         }
       ]
@@ -399,6 +357,27 @@
           "answer": "C",
           "answer_text": "civil commotion",
           "has_explanation": true
+        }
+      ]
+    },
+    {
+      "verdict": "REVIEW",
+      "scope": "Contracts",
+      "question": "The failure to disclose known facts is",
+      "keep": null,
+      "retire": [],
+      "members": [
+        {
+          "uid": "scoped_questions_2.json:q_20",
+          "answer": "B",
+          "answer_text": "concealment",
+          "has_explanation": true
+        },
+        {
+          "uid": "scoped_questions_21.json:q_8",
+          "answer": "B",
+          "answer_text": "concealment",
+          "has_explanation": false
         }
       ]
     },

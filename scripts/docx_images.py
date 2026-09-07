@@ -56,9 +56,10 @@ def pdf_images(path: Path, out_dir: Path) -> list[Path]:
     written = []
     for page_no, page in enumerate(PdfReader(str(path)).pages, start=1):
         for index, image in enumerate(page.images):
-            # Several images on one page keep their within-page order.
-            suffix = "" if index == 0 else f"-{index}"
-            destination = out_dir / f"page-{page_no:03d}{suffix}.png"
+            # Always suffix, including the first: "page-005.png" sorts AFTER
+            # "page-005-1.png", so an unsuffixed first image silently reorders
+            # every page that holds more than one.
+            destination = out_dir / f"page-{page_no:03d}-{index:02d}.png"
             destination.write_bytes(image.data)
             written.append(destination)
     if not written:

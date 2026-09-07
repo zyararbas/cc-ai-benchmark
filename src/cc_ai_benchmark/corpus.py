@@ -4,6 +4,14 @@ Text is pulled straight out of the .docx zip rather than through a library: the
 harness stays dependency-free, and the extraction is a dozen lines anyone can
 audit. Sections are keyed by the same `ref` the bank items carry, so C1 (oracle
 context) is an exact lookup rather than a search.
+
+Documents also arrive as PDF -- the same deck reissued in another format -- and
+that path does need pypdf, an optional extra. A missing document is not a
+degraded corpus, it is a wrong one: every grounded answer for the items it backs
+is then produced without the material the condition claims to supply. So an
+unreadable source raises rather than being skipped. This module was `.docx`-only
+until three documents were reissued as PDF and silently vanished from the
+corpus, taking C1 for 60 items with them.
 """
 
 from __future__ import annotations
@@ -64,22 +72,54 @@ class Section:
         return len(self.text) // 4
 
 
-def _extract(path: Path) -> str:
+def _tidy(text: str) -> str:
+    return _BLANKS.sub("\n\n", _WS.sub(" ", text)).strip()
+
+
+def _extract_docx(path: Path) -> str:
     with zipfile.ZipFile(path) as archive:
         xml = archive.read("word/document.xml").decode("utf-8", "ignore")
-    text = _TAG.sub("", _PARA.sub("\n", xml))
-    return _BLANKS.sub("\n\n", _WS.sub(" ", text)).strip()
+    return _tidy(_TAG.sub("", _PARA.sub("\n", xml)))
+
+
+def _extract_pdf(path: Path) -> str:
+    try:
+        from pypdf import PdfReader
+    except ImportError as exc:  # pragma: no cover - depends on optional extra
+        raise RuntimeError(
+            f"{path.name} is a PDF and pypdf is not installed. "
+            "`pip install -e '.[pdf]'` -- without it this document is missing "
+            "from the corpus and every grounded answer it backs is unsupported."
+        ) from exc
+    # Page order is reading order; there is no relationship table to resolve.
+    pages = (page.extract_text() or "" for page in PdfReader(path).pages)
+    return _tidy("\n\n".join(pages))
+
+
+_EXTRACTORS = {".docx": _extract_docx, ".pdf": _extract_pdf}
 
 
 @functools.lru_cache(maxsize=1)
 def load_sections(directory: Path = DOCS_DIR) -> dict[str, Section]:
     """Every source document, keyed by filename -- the bank's `ref` value."""
     sections: dict[str, Section] = {}
-    for path in sorted(directory.glob("*.docx")):
+    seen_stems: dict[str, str] = {}
+    candidates = sorted(
+        (p for p in directory.iterdir() if p.suffix.lower() in _EXTRACTORS),
+        # .docx first within a stem: native text beats text recovered from a
+        # PDF's layout, and a deck reissued as PDF is the same document twice.
+        key=lambda p: (p.name.casefold(), p.suffix.lower() != ".docx"),
+    )
+    for path in candidates:
         if path.name.startswith("~$"):
             continue
+        stem = path.stem.strip().casefold()
+        if stem in seen_stems:
+            continue
+        seen_stems[stem] = path.name
         scope = re.sub(r"^\d+\.\s*", "", path.stem).strip()
-        sections[path.name] = Section(ref=path.name, scope=scope, text=_extract(path))
+        text = _EXTRACTORS[path.suffix.lower()](path)
+        sections[path.name] = Section(ref=path.name, scope=scope, text=text)
     return sections
 
 

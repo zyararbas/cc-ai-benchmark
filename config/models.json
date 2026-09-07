@@ -1,21 +1,27 @@
 {
-  "_comment": "The systems a sweep runs. Model ids MUST be exact provider snapshot ids -- floating aliases move underneath you and break comparability between runs. The ids below marked FILL-IN are placeholders: set them from each provider's model list, then run `cc-ai-benchmark verify` to confirm before a full sweep. Whatever the provider actually resolves to is what lands in the report.",
+  "_comment": "The systems a sweep runs. Model ids MUST be exact provider snapshot ids -- floating aliases move underneath you and break comparability between runs. Every id below was taken from `cc-ai-benchmark models` on 2026-09-05, not from memory. Whatever the provider actually resolves to is what lands in the report.",
+  "_backend_note": "The Gemini systems run against AI Studio ($GEMINI_API_KEY), not Vertex: the Vertex path needs application-default credentials and this machine's have expired. Same model ids, different endpoint, different bill -- the adapter records which one answered.",
   "systems": {
     "gemini-flash": {
       "adapter": "gemini",
       "model": "gemini-3.8-flash",
       "label": "gemini-3.8-flash",
-      "vertex": true,
-      "project": "${GOOGLE_CLOUD_PROJECT}",
-      "location": "${GOOGLE_CLOUD_LOCATION}"
+      "vertex": false,
+      "concurrency": 2
     },
     "gemini-pro": {
       "adapter": "gemini",
       "model": "gemini-3.1-pro-preview",
       "label": "gemini-3.1-pro",
-      "vertex": true,
-      "project": "${GOOGLE_CLOUD_PROJECT}",
-      "location": "${GOOGLE_CLOUD_LOCATION}"
+      "vertex": false,
+      "concurrency": 4
+    },
+    "gemini-flash-lite": {
+      "adapter": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "label": "gemini-3.5-flash-lite",
+      "vertex": false,
+      "concurrency": 4
     },
     "anthropic": {
       "adapter": "anthropic",
@@ -25,32 +31,73 @@
     },
     "openai": {
       "adapter": "openai",
-      "model": "FILL-IN-openai-latest-snapshot-id",
-      "label": "openai-latest"
+      "model": "gpt-5.5-2026-04-23",
+      "label": "gpt-5.5"
+    },
+    "openai-mini": {
+      "adapter": "openai",
+      "model": "gpt-5.4-mini-2026-03-17",
+      "label": "gpt-5.4-mini"
     },
     "our-approach": {
       "adapter": "grounded",
       "base_system": "gemini",
       "base_kwargs": {
         "model": "gemini-3.1-pro-preview",
-        "vertex": true,
-        "project": "${GOOGLE_CLOUD_PROJECT}",
-        "location": "${GOOGLE_CLOUD_LOCATION}"
+        "vertex": false
       },
       "strategy": "full",
-      "label": "our-approach"
+      "label": "our-approach",
+      "concurrency": 2
     },
-    "gemini-flash-lite": {
-      "adapter": "gemini",
-      "model": "gemini-3.5-flash-lite",
-      "label": "gemini-3.5-flash-lite",
-      "vertex": true,
-      "project": "${GOOGLE_CLOUD_PROJECT}",
-      "location": "${GOOGLE_CLOUD_LOCATION}"
+    "ours-gemini-flash": {
+      "adapter": "grounded",
+      "base_system": "gemini",
+      "base_kwargs": {
+        "model": "gemini-3.8-flash",
+        "vertex": false
+      },
+      "strategy": "full",
+      "label": "ours@gemini-3.8-flash",
+      "concurrency": 1
+    },
+    "ours-openai": {
+      "adapter": "grounded",
+      "base_system": "openai",
+      "base_kwargs": {
+        "model": "gpt-5.5-2026-04-23"
+      },
+      "strategy": "full",
+      "label": "ours@gpt-5.5",
+      "concurrency": 2
+    },
+    "ours-retrieval": {
+      "adapter": "grounded",
+      "base_system": "gemini",
+      "base_kwargs": {
+        "model": "gemini-3.8-flash",
+        "vertex": false
+      },
+      "strategy": "retrieval",
+      "k": 2,
+      "label": "ours-retrieval@gemini-3.8-flash",
+      "concurrency": 1
+    },
+    "ours-flash-lite": {
+      "adapter": "grounded",
+      "base_system": "gemini",
+      "base_kwargs": {
+        "model": "gemini-3.5-flash-lite",
+        "vertex": false
+      },
+      "strategy": "full",
+      "label": "ours@gemini-3.5-flash-lite",
+      "concurrency": 2
     }
   },
   "defaults": {
     "condition": "C0",
     "our_approach_condition": "C3"
-  }
+  },
+  "_concurrency_note": "Set per system against the observed limit, which is tokens-per-minute, not requests-per-minute: gemini-3.8-flash allows 3M input tokens/min and one full-corpus call spends 107k of it, so three systems sharing that model share one pool. A 429 is retried honouring the server's own retryDelay (adapters/base.py), but the cheapest fix is not to provoke it."
 }

@@ -77,6 +77,9 @@ class GroundedAdapter(BaseAdapter):
     """
 
     name = "grounded"
+    # Native configuration, by definition: this system supplies its own material
+    # and ignores the condition the sweep hands it.
+    fixed_condition = "C3"
 
     def __init__(
         self,

@@ -33,6 +33,10 @@ class Metrics:
     tokens_out: int
     latency_p50_ms: float
     latency_p95_ms: float
+    #: Items that needed more than one call. A run with many of these was
+    #: fighting the provider's quota, and its latency figures describe the
+    #: queue rather than the model.
+    throttled_items: int = 0
 
     def to_dict(self) -> dict[str, Any]:
         data = self.__dict__.copy()
@@ -88,6 +92,7 @@ def compute(results: list[Any]) -> Metrics:
         tokens_out=sum(r.usage.get("output_tokens", 0) for r in results),
         latency_p50_ms=_percentile(latencies, 50),
         latency_p95_ms=_percentile(latencies, 95),
+        throttled_items=sum(1 for r in results if getattr(r, "attempts", 1) > 1),
     )
 
 

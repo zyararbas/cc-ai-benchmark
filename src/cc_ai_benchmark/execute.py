@@ -37,15 +37,23 @@ class ItemResult:
     parsed_answer: str | None
     confidence: float | None
     latency_ms: float
+    attempts: int = 1
     usage: dict[str, int] = field(default_factory=dict)
     cost_usd: float | None = None
     error: str | None = None
     text: str = ""
 
+    #: Responses are stored clipped to keep a 683-item sweep's report a readable
+    #: size. Anything that re-reads stored text -- scripts/regrade.py -- has to
+    #: know when it is looking at a fragment, because a JSON object cut in half
+    #: parses as a failure and would be recorded as one.
+    TEXT_LIMIT = 600
+
     def to_dict(self) -> dict[str, Any]:
         data = self.__dict__.copy()
         data["outcome"] = str(self.outcome)
-        data["text"] = self.text[:600]
+        data["text"] = self.text[: self.TEXT_LIMIT]
+        data["text_truncated"] = len(self.text) > self.TEXT_LIMIT
         return data
 
 
@@ -92,6 +100,7 @@ def _grade_response(item: Item, response: Response) -> tuple[Grade, ItemResult]:
         parsed_answer=verdict.parsed,
         confidence=verdict.confidence,
         latency_ms=response.latency_ms,
+        attempts=response.attempts,
         usage=dict(response.usage),
         cost_usd=response.cost_usd,
         error=response.error,
@@ -108,6 +117,11 @@ def run_system(
 ) -> SystemRun:
     """Run one system over the bank on its own bounded pool."""
     started_at = utcnow_iso()
+    # A system that brings its own material is at C3 regardless of the sweep
+    # flag, so the report has to record what it actually ran under. This is what
+    # lets baselines and the grounded approach share one sweep -- identical
+    # items, one paired comparison -- without either row being mislabelled.
+    condition = getattr(adapter, "fixed_condition", None) or condition
     budget = budget or _Budget(None)
     results: list[ItemResult] = []
     stopped: str | None = None
@@ -188,7 +202,7 @@ def run_matrix(
                 runs.append(
                     SystemRun(
                         system=adapter.name,
-                        condition=condition,
+                        condition=getattr(adapter, "fixed_condition", None) or condition,
                         adapter_describe=adapter.describe(),
                         started_at=utcnow_iso(),
                         finished_at=utcnow_iso(),

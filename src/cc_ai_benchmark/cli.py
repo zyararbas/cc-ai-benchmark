@@ -57,6 +57,17 @@ def build_parser() -> argparse.ArgumentParser:
     )
     bench.add_argument("--condition", default="C0", choices=["C0", "C1", "C2", "C3"])
     bench.add_argument("--limit", type=int, help="only the first N items (use for smoke runs)")
+    bench.add_argument(
+        "--sample",
+        type=int,
+        help="N items drawn across scopes, seeded (use for a partial measurement)",
+    )
+    bench.add_argument("--seed", type=int, default=0, help="sample seed (default: 0)")
+    bench.add_argument(
+        "--items",
+        type=Path,
+        help="file of item ids, one per line: re-measure an exact set (a diagnostic)",
+    )
     bench.add_argument("--scope", action="append", help="restrict to a scope; repeatable")
     bench.add_argument("--budget", type=float, help="hard ceiling in USD for the whole sweep")
     bench.add_argument("--name", default="sweep", help="report filename suffix")
@@ -192,7 +203,17 @@ def cmd_bench(args: argparse.Namespace) -> int:
     from cc_ai_benchmark.execute import run_matrix
     from cc_ai_benchmark.report import build_report, print_table, write
 
-    items = select(load_bank(), scopes=args.scope, limit=args.limit)
+    item_ids = None
+    if args.items:
+        item_ids = [ln.strip() for ln in args.items.read_text().splitlines() if ln.strip()]
+    items = select(
+        load_bank(),
+        scopes=args.scope,
+        limit=args.limit,
+        sample=args.sample,
+        seed=args.seed,
+        item_ids=item_ids,
+    )
     if not items:
         print("error: no items selected", file=sys.stderr)
         return 1
@@ -207,7 +228,13 @@ def cmd_bench(args: argparse.Namespace) -> int:
     notes = {
         "condition": args.condition,
         "template_hash": template_hash(),
-        "selection": {"limit": args.limit, "scopes": args.scope},
+        "selection": {
+            "limit": args.limit,
+            "sample": args.sample,
+            "seed": args.seed,
+            "item_ids": len(item_ids) if item_ids else None,
+            "scopes": args.scope,
+        },
     }
     if args.condition == "C2":
         notes["shared_retriever_recall_at_1"] = recall_at_k(items, 1)

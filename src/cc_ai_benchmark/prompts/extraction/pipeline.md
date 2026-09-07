@@ -83,6 +83,27 @@ pipeline:
   prompt's example.
 - Number `id` sequentially across the whole document, continuing across images.
 
+### Replace the names of people
+
+Where a question names a person, substitute a different name. This is the one
+deliberate departure from verbatim fidelity, and it exists because the bank is
+consumed by systems outside this repository.
+
+- Replace **people only**. Organisation names are frequently the subject of the
+  question — "All of the following are rating services EXCEPT: Lloyd's of
+  London / Fitch's / Standard & Poor's / A.M. Best" collapses the moment you
+  touch them. Same for statutes, forms and place names.
+- Be consistent within an item. A name in the stem, in a choice and in the
+  explanation is one person and must get one replacement.
+- Change nothing the question turns on: the number of parties, who did what to
+  whom, the relationships between them, and any attribute the answer depends on
+  (an age, a role, a job). Swap the label, not the facts.
+- Keep the shape. A first name stays a first name; "Mr. Alvarez" does not
+  become "Dana".
+
+If a name cannot be replaced without changing what is being asked, leave it and
+say so in the report.
+
 **The answer comes from the markers, never from your own knowledge of
 insurance.** If you find yourself reasoning about which option is correct, you
 have left the task. An item whose marker is unreadable gets `"answer": null`,

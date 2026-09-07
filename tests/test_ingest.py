@@ -168,3 +168,23 @@ def test_duplicate_audit_ignores_tombstones(tmp_path):
 
     items = audit_duplicates.load(tmp_path)
     assert [i["id"] for i in items] == ["q_2"]
+
+
+def test_pdf_page_images_sort_into_reading_order(tmp_path, monkeypatch):
+    """An unsuffixed first image sorts after its own page-mates."""
+    import sys
+    import types
+
+    import docx_images
+
+    class FakePage:
+        def __init__(self, count):
+            self.images = [types.SimpleNamespace(data=PNG)] * count
+
+    fake = types.ModuleType("pypdf")
+    fake.PdfReader = lambda _path: types.SimpleNamespace(pages=[FakePage(3), FakePage(1)])
+    monkeypatch.setitem(sys.modules, "pypdf", fake)
+
+    names = [p.name for p in docx_images.pdf_images(tmp_path / "x.pdf", tmp_path / "out")]
+    assert names == sorted(names), f"not in reading order: {names}"
+    assert names[0] == "page-001-00.png"

@@ -63,6 +63,11 @@ def load(directory: Path) -> list[dict]:
             if not line:
                 continue
             raw = json.loads(line)
+            # Tombstones hold a sequence slot so ids do not shift; they are not
+            # live questions and must not be matched against, or a retired item
+            # reappears as a duplicate of the question that replaced it.
+            if raw.get("retired"):
+                continue
             choices = raw.get("choices") or {}
             answer = raw.get("answer")
             items.append(
@@ -143,7 +148,7 @@ def keeper(group: list[dict]) -> dict:
 
 
 def main(argv: list[str]) -> int:
-    directory = Path(argv[1]) if len(argv) > 1 else REPO_ROOT / "outputs"
+    directory = Path(argv[1]) if len(argv) > 1 else REPO_ROOT / "data" / "documents" / "questions"
     items = load(directory)
     groups = sorted(cluster(items), key=lambda g: (g[0]["file"], g[0]["id"]))
 

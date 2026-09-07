@@ -32,6 +32,8 @@ dev = [
 anthropic = ["anthropic>=0.40"]
 gemini = ["google-genai>=1.0"]
 openai = ["openai>=1.40"]
+# Only needed to ingest a source document supplied as PDF rather than .docx.
+pdf = ["pypdf>=5.0"]
 providers = ["anthropic>=0.40", "google-genai>=1.0", "openai>=1.40"]
 
 [project.scripts]

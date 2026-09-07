@@ -10,7 +10,7 @@ from cc_ai_benchmark import __version__
 from cc_ai_benchmark.execute import SystemRun
 from cc_ai_benchmark.metrics import by_scope, compute
 from cc_ai_benchmark.models import describe_environment, utcnow_iso
-from cc_ai_benchmark.storage import OUTPUT_DIR
+from cc_ai_benchmark.storage import OUTPUT_DIR, run_dir, unique_path
 
 
 def build_report(runs: list[SystemRun], bank_size: int, notes: dict[str, Any]) -> dict[str, Any]:
@@ -43,9 +43,7 @@ def build_report(runs: list[SystemRun], bank_size: int, notes: dict[str, Any]) -
 
 
 def write(report: dict[str, Any], output_dir: Path = OUTPUT_DIR, name: str = "sweep") -> Path:
-    stamp = report["generated_at"].replace(":", "").replace("-", "")
-    output_dir.mkdir(parents=True, exist_ok=True)
-    path = output_dir / f"{stamp}-{name}.json"
+    path = unique_path(run_dir(output_dir, report["generated_at"]), name, ".json")
     path.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return path
 

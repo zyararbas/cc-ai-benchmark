@@ -1,0 +1,11 @@
+{
+  // The raw question files are JSON Lines under a .json extension, because the
+  // loaders glob `scoped_questions_*.json` and the name is load-bearing. Left
+  // as JSON, an editor set to format on save pretty-prints them into a stream
+  // of multi-line objects: the loaders tolerate that, but every diff becomes
+  // unreadable and a real edit hides inside it. Associating them with a
+  // language that has no formatter is what stops it.
+  "files.associations": {
+    "**/data/documents/questions/*.json": "jsonl"
+  }
+}

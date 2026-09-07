@@ -1,0 +1,36 @@
+{
+  "_comment": [
+    "Clusters a reviewer has already ruled on. audit_duplicates.py regenerates",
+    "duplicates.json from scratch on every run, so a verdict recorded only there",
+    "is lost on the next run and the cluster goes back to blocking. This file is",
+    "the durable half: the audit reads it and stamps the recorded verdict instead",
+    "of REVIEW.",
+    "",
+    "A decision is keyed by the exact set of member uids it was made about. If a",
+    "question in the cluster is later edited, removed or joined by a third, the",
+    "key stops matching and the cluster returns to REVIEW -- a ruling applies to",
+    "what the reviewer actually read, not to whatever the cluster becomes."
+  ],
+  "decisions": [
+    {
+      "verdict": "VARIANTS",
+      "uids": ["scoped_questions_10.json:q_6", "scoped_questions_10.json:q_17"],
+      "note": "Changes condition, asked twice with different distractor pools. Kept as variants."
+    },
+    {
+      "verdict": "VARIANTS",
+      "uids": ["scoped_questions_12.json:q_15", "scoped_questions_12.json:q_29"],
+      "note": "Bailee policy pays the customer / the bailor (customer). Kept as variants."
+    },
+    {
+      "verdict": "VARIANTS",
+      "uids": ["scoped_questions_20.json:q_1", "scoped_questions_20.json:q_34"],
+      "note": "Same NOT-correct stem over disjoint option sets: two distinct questions."
+    },
+    {
+      "verdict": "VARIANTS",
+      "uids": ["scoped_questions_2.json:q_20", "scoped_questions_21.json:q_8"],
+      "note": "Concealment, asked in Contracts and in CA Laws. Kept in both scopes."
+    }
+  ]
+}

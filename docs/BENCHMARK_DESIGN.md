@@ -35,11 +35,14 @@ leaderboard is a matrix, not a column. The headline comparison is pre-registered
 
 ### 2.1 What exists today
 
-789 four-choice items extracted from P&C licensing material:
+842 four-choice items extracted from P&C licensing material:
 
-- `outputs/questions_1.json` — 100 items
-- `outputs/scoped_questions_[1..23].json` — 689 items, each tagged with a `scope`
-  and a source `ref`
+- `data/documents/questions/questions_1.json` — 100 items
+- `data/documents/questions/scoped_questions_[1..23].json` — 742 items, each
+  tagged with a `scope` and a source `ref`
+
+A further 41 questions are held in those files as tombstones: retired, holding
+their sequence slot so no live id shifts, and not built into the bank.
 
 JSON Lines, one item per line: `id`, `question`, `choices` (A–D), `answer`,
 `explanation`, and on the scoped set `scope` and `ref`. Extracted from the
@@ -48,7 +51,14 @@ JSON Lines, one item per line: `id`, `question`, `choices` (A–D), `answer`,
 
 ### 2.2 Defects that block using it as ground truth
 
-Found by inspection; each needs fixing before any number is published.
+Found by inspection; each needed fixing before any number was published.
+Defects 1 through 4 have since been closed — the bank is materialized to
+`data/bank/pc-bank.jsonl` with global `pc-<source>-<seq>` ids, the mechanical
+duplicates are retired through `data/audit/duplicates.json`, and the clusters
+needing a reviewer were adjudicated as variants and recorded in
+`data/audit/adjudications.json`. The rows are kept as the record of what was
+wrong and why the current design answers it. Counts in them are as-found and
+are not maintained.
 
 | # | Defect | Evidence | Fix |
 |---|---|---|---|
@@ -97,7 +107,7 @@ Two findings worth carrying forward:
   different scopes, so scope labels are clean and `scope` is safe to use as the
   clustering variable for the bootstrap in §8.
 
-Integrity checks pass across all 689 items: every answer letter exists in its
+Integrity checks pass across all 742 scoped items: every answer letter exists in its
 own choice map, every item has exactly four options, no option text is
 duplicated inside an item, no stem or option is blank.
 
@@ -472,7 +482,7 @@ exact, free, and deterministic; a judge would only add noise and cost.
 
 ## 8. Statistics
 
-- **n = 689 on `test`.** At p ≈ 0.90 the 95% CI half-width is roughly ±2.2pp.
+- **n = 742 on `test`.** At p ≈ 0.90 the 95% CI half-width is roughly ±2.2pp.
   Unpaired differences under ~4pp are not resolvable. Say so rather than ranking
   systems inside the noise.
 - **Compare paired, not marginal.** Both systems answer the same items, so use

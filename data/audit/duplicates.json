@@ -7,8 +7,8 @@
   "tally": {
     "DISTINCT": 3,
     "IDENTICAL": 1,
-    "REVIEW": 4,
-    "SHUFFLED": 9
+    "SHUFFLED": 9,
+    "VARIANTS": 4
   },
   "retire_uids": [
     "scoped_questions_16.json:q_33",
@@ -23,10 +23,11 @@
     "scoped_questions_19.json:q_51"
   ],
   "item_count_after_dedup": 742,
-  "needs_adjudication": 4,
+  "needs_adjudication": 0,
   "clusters": [
     {
-      "verdict": "REVIEW",
+      "verdict": "VARIANTS",
+      "adjudicated": true,
       "scope": "Commercial Package Policy",
       "question": "Which of the following conditions states that the first-named insured is authorized to make changes in the terms of the policy with the consent of the insurance company?",
       "keep": null,
@@ -47,7 +48,8 @@
       ]
     },
     {
-      "verdict": "REVIEW",
+      "verdict": "VARIANTS",
+      "adjudicated": true,
       "scope": "Commercial Inland Marine Insurance",
       "question": "The bailee policy pays",
       "keep": null,
@@ -69,6 +71,7 @@
     },
     {
       "verdict": "DISTINCT",
+      "adjudicated": false,
       "scope": "Farm insurance",
       "question": "Perils covered under the covered causes of loss form—basic section include all of the following EXCEPT",
       "keep": null,
@@ -90,6 +93,7 @@
     },
     {
       "verdict": "SHUFFLED",
+      "adjudicated": false,
       "scope": "Crime Insurance_",
       "question": "The Inside the Premises—Robbery or Safe Burglary of Other Property insuring agreement in the commercial crime policy covers which one of the following perils?",
       "keep": "scoped_questions_16.json:q_19",
@@ -113,6 +117,7 @@
     },
     {
       "verdict": "SHUFFLED",
+      "adjudicated": false,
       "scope": "Crime Insurance_",
       "question": "After Acme Construction wins a bid to build an office complex, the owner demands that Acme purchase a payment bond to cover electrical and heating subcontractors. What guarantee is the owner seeking from Acme Construction by demanding the payment bond?",
       "keep": "scoped_questions_16.json:q_20",
@@ -136,6 +141,7 @@
     },
     {
       "verdict": "SHUFFLED",
+      "adjudicated": false,
       "scope": "Crime Insurance_",
       "question": "Which of the following statements regarding employee theft is NOT true?",
       "keep": "scoped_questions_16.json:q_21",
@@ -159,6 +165,7 @@
     },
     {
       "verdict": "SHUFFLED",
+      "adjudicated": false,
       "scope": "Crime Insurance_",
       "question": "Which one of the following losses would be covered under the Inside the Premises—Robbery or Safe Burglary of Other Property insuring agreement in the commercial crime policy?",
       "keep": "scoped_questions_16.json:q_23",
@@ -182,6 +189,7 @@
     },
     {
       "verdict": "SHUFFLED",
+      "adjudicated": false,
       "scope": "Crime Insurance_",
       "question": "In commercial crime insurance, shoplifting is classified as",
       "keep": "scoped_questions_16.json:q_24",
@@ -205,6 +213,7 @@
     },
     {
       "verdict": "SHUFFLED",
+      "adjudicated": false,
       "scope": "Crime Insurance_",
       "question": "A hotel has added a guest's property endorsement to its commercial crime coverage form. A guest at the hotel removes her jewelry and leaves it wrapped in a towel at the front desk while she uses some exercise equipment. When she finishes her workout, the jewelry is gone. The policy provides",
       "keep": "scoped_questions_16.json:q_30",
@@ -228,6 +237,7 @@
     },
     {
       "verdict": "SHUFFLED",
+      "adjudicated": false,
       "scope": "Crime Insurance_",
       "question": "How is burglary defined?",
       "keep": "scoped_questions_16.json:q_32",
@@ -251,6 +261,7 @@
     },
     {
       "verdict": "SHUFFLED",
+      "adjudicated": false,
       "scope": "Crime Insurance_",
       "question": "Who are the 3 parties to a surety bond?",
       "keep": "scoped_questions_16.json:q_46",
@@ -274,6 +285,7 @@
     },
     {
       "verdict": "SHUFFLED",
+      "adjudicated": false,
       "scope": "Businessowners Policy",
       "question": "Which of the following losses would be excluded under the property coverage of the BOP?",
       "keep": "scoped_questions_19.json:q_14",
@@ -297,6 +309,7 @@
     },
     {
       "verdict": "DISTINCT",
+      "adjudicated": false,
       "scope": "Businessowners Policy",
       "question": "All of the following are considered additional coverages in the Businessowners Policy EXCEPT",
       "keep": null,
@@ -318,6 +331,7 @@
     },
     {
       "verdict": "IDENTICAL",
+      "adjudicated": false,
       "scope": "Businessowners Policy",
       "question": "Which of the following is an optional coverage in the businessowners policy that may require that the insured to pay an additional premium?",
       "keep": "scoped_questions_19.json:q_50",
@@ -341,6 +355,7 @@
     },
     {
       "verdict": "DISTINCT",
+      "adjudicated": false,
       "scope": "Businessowners Policy",
       "question": "The standard deductible for the businessowners policy is",
       "keep": null,
@@ -361,7 +376,8 @@
       ]
     },
     {
-      "verdict": "REVIEW",
+      "verdict": "VARIANTS",
+      "adjudicated": true,
       "scope": "Contracts",
       "question": "The failure to disclose known facts is",
       "keep": null,
@@ -382,7 +398,8 @@
       ]
     },
     {
-      "verdict": "REVIEW",
+      "verdict": "VARIANTS",
+      "adjudicated": true,
       "scope": "Workers compensation_",
       "question": "Which of these statements regarding workers' compensation benefits is NOT correct?",
       "keep": null,

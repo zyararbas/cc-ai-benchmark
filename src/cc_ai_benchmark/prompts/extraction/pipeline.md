@@ -14,7 +14,7 @@ one that can quietly destroy a year of results.
 | `N` | `1` | The leading number in the filename. **Never reassign it.** |
 | `SCOPE` | `Insurance _ Property and casualty` | The filename with the leading number and extension stripped |
 | `REF` | `1. Insurance _ Property and casualty.docx` | The filename, verbatim |
-| `OUT` | `outputs/scoped_questions_1.json` | Derived from `N` |
+| `OUT` | `data/documents/questions/scoped_questions_1.json` | Derived from `N` |
 
 `N` is load-bearing. Bank ids are `pc-<N>-<seq>`, so renumbering a document
 renames every question in it and silently breaks comparability with every
@@ -23,8 +23,13 @@ report ever produced. If a document is renamed, keep its original `N`.
 ## Step 1 — Pull the images out, in document order
 
 ```bash
-python scripts/docx_images.py "$DOC" -o work/<N>/     # .docx or .pdf
+python scripts/docx_images.py "$DOC" -o data/documents/work/<N>/   # .docx or .pdf
 ```
+
+Extract under `data/documents/`, not into a `work/` at the repo root. This
+repository is public and `data/documents/` is the only path gitignored for the
+licensed material; screenshots written anywhere else are one `git add -A` away
+from being published.
 
 Both formats are handled. The same deck often arrives twice, once as each, and
 the embedded screenshots are usually byte-for-byte the same picture re-encoded
@@ -135,7 +140,7 @@ name, which makes every historical number a lie without producing a single
 error message.
 
 ```bash
-python scripts/reconcile_extraction.py <N> --new work/<N>/extracted.jsonl
+python scripts/reconcile_extraction.py <N> --new data/documents/work/<N>/extracted.jsonl
 ```
 
 It matches old to new on the normalized stem and classifies every item:

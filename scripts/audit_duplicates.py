@@ -17,6 +17,8 @@ Classes:
   CONFLICT    same stem, same choices, keys differ -> ADJUDICATE (ground-truth bug)
   REVIEW      same question, different choices     -> human call: duplicate or two valid items
   DISTINCT    fuzzy stem match, different answers  -> keep both, no action
+  VARIANTS    a reviewer ruled the cluster is two shapes of a question, not
+              a duplicate -> keep both; recorded in data/audit/adjudications.json
 """
 
 from __future__ import annotations
@@ -138,6 +140,22 @@ RETIRE = {"IDENTICAL", "SHUFFLED"}  # safe to resolve mechanically
 ADJUDICATE = {"CONFLICT", "REVIEW"}  # needs a P&C-literate reviewer
 
 
+def load_decisions(path: Path) -> dict[frozenset[str], dict]:
+    """Rulings a reviewer has already made, keyed by the cluster they cover.
+
+    This manifest is rebuilt from scratch every run, so a verdict written into
+    it is gone by the next one and the cluster blocks again. Decisions live in
+    their own file and are keyed by the exact member set they were made about:
+    if the cluster gains, loses or edits a member, the key stops matching and
+    the cluster goes back to REVIEW rather than inheriting a ruling that was
+    made about different questions.
+    """
+    if not path.exists():
+        return {}
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    return {frozenset(d["uids"]): d for d in raw.get("decisions", [])}
+
+
 def keeper(group: list[dict]) -> dict:
     """Prefer the item carrying an explanation, then the lower ordinal."""
     return sorted(
@@ -150,14 +168,26 @@ def main(argv: list[str]) -> int:
     items = load(directory)
     groups = sorted(cluster(items), key=lambda g: (g[0]["file"], g[0]["id"]))
 
+    decisions = load_decisions(REPO_ROOT / "data" / "audit" / "adjudications.json")
+    applied: set[frozenset[str]] = set()
+
     manifest, tally = [], collections.Counter()
     for group in groups:
         verdict = classify(group)
+        key = frozenset(g["uid"] for g in group)
+        ruling = decisions.get(key)
+        if ruling and verdict in ADJUDICATE:
+            # A reviewer looked at exactly these questions and ruled. Their call
+            # stands over the mechanical one; it never manufactures a retirement,
+            # so the worst a stale ruling can do is keep a duplicate alive.
+            verdict = ruling["verdict"]
+            applied.add(key)
         tally[verdict] += 1
         keep = keeper(group) if verdict in RETIRE else None
         manifest.append(
             {
                 "verdict": verdict,
+                "adjudicated": bool(ruling and key in applied),
                 "scope": group[0]["scope"],
                 "question": group[0]["question"],
                 "keep": keep["uid"] if keep else None,
@@ -199,6 +229,12 @@ def main(argv: list[str]) -> int:
         print(f"  {verdict:12} {count}")
     print(f"retire         {len(retire)}  -> {len(items) - len(retire)} items after dedup")
     print(f"adjudicate     {len(needs_review)}")
+    print(f"ruled          {len(applied)} cluster(s) carried a recorded decision")
+    # A ruling that matches nothing means its cluster changed under it, so the
+    # questions it was made about are no longer the questions in the bank.
+    for key, ruling in decisions.items():
+        if key not in applied:
+            print(f"  STALE  {ruling['verdict']}  {sorted(key)}")
     print(f"manifest       {target.relative_to(REPO_ROOT)}")
     return 1 if needs_review else 0
 

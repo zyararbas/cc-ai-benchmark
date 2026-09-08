@@ -1,6 +1,6 @@
 {
   "source_dir": "/Users/aykutyararbas/projects/cc-ai-benchmark/data/documents/questions",
-  "item_count": 752,
+  "item_count": 779,
   "cluster_count": 17,
   "stem_threshold": 0.93,
   "answer_threshold": 0.75,
@@ -22,7 +22,7 @@
     "scoped_questions_19.json:q_20",
     "scoped_questions_19.json:q_51"
   ],
-  "item_count_after_dedup": 742,
+  "item_count_after_dedup": 769,
   "needs_adjudication": 0,
   "clusters": [
     {

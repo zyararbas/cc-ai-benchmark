@@ -175,6 +175,32 @@ questions frequently duplicate existing ones across documents — a definition
 in the Contracts document reappearing in Commercial Liability — and an
 undetected duplicate double-weights whatever it happens to test.
 
+## Step 7 — Take the question images back out of the document
+
+The scoped document is the corpus the grounded conditions read from, and a
+question screenshot carries its own answer key. Leaving them in means C1 hands
+the system under test the answer rather than the material it is derived from.
+Text extraction cannot see inside an image, so nothing fails — the leak is
+invisible until something with vision reads the same file.
+
+```bash
+python scripts/strip_question_images.py "$DOC" \
+    --keep 2-00 2-01 6-00 \
+    --backup data/documents/work/<N>/original-with-images.pdf
+```
+
+`--keep` takes the content slides from the step 2 triage, named as
+`docx_images.py` numbered them. Everything else goes. The backup is the only
+remaining copy of the stripped images and it lands in a gitignored directory,
+so it is not recoverable from git either.
+
+Removing the reference is not removing the image: an unreferenced XObject stays
+in the file, which leaves the screenshots there for anything that walks objects
+instead of pages, and makes the file *bigger*. The script rebuilds the document
+from its pages for that reason. A stripped PDF that did not shrink did not work
+— check the image count and the file size, and check that the extracted text is
+unchanged.
+
 Then report, in this order:
 
 1. Counts: images found, discarded as content, extracted, flagged.

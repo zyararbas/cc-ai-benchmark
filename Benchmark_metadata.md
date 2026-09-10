@@ -7,7 +7,7 @@ Two collections live in `data/documents/questions/`, and `cc-ai-benchmark
 build-bank` materializes them into `data/bank/pc-bank.jsonl`:
 
 **Questions** — `questions_1.json` — 100 items  
-**Scoped questions** — `scoped_questions_[1..23].json` — 769 items across 23 files  
+**Scoped questions** — `scoped_questions_[1..23].json` — 789 items across 23 files  
 
 ---
 
@@ -63,7 +63,7 @@ Adds `scope` and `ref` after `explanation`; otherwise identical to the collectio
 | 3 | Basics of Property and Casualty Insurance | 26 | 16 |
 | 4 | Basics of Property Insurance Activities | 44 | 13 |
 | 5 | Basics of Casualty Insurance | 37 | 14 |
-| 6 | Dwelling Insurance | 29 | 29 |
+| 6 | Dwelling Insurance | 39 | 39 |
 | 7 | Homeowners Insurance | 41 | 41 |
 | 8 | Personal Auto Insurance | 29 | 19 |
 | 9 | Personal Insurance- Miscellaneous | 22 | 12 |
@@ -81,19 +81,24 @@ Adds `scope` and `ref` after `explanation`; otherwise identical to the collectio
 | 21 | California Laws, Rules. and Regulations for Property & Casualty Insurance | 29 | 19 |
 | 22 | California Laws, Rules, and Regulations for Property  Insurance Only | 7 | 0 |
 | 23 | California Laws, Rules, and Regulations for Casualty  Insurance Only | 10 | 1 |
-| | **Total** | **769** | **285** |
+| | **Total** | **789** | **297** |
 
 ### Aggregate statistics
 
-- 769 scoped items across 23 files, all with exactly 4 choices (A-D)
-- Answer distribution: **A 203, B 192, C 194, D 180** -- no positional bias of concern
-- `explanation` is `null` on 285 items (37.1%), non-null on 484
+- 789 scoped items across 23 files, all with exactly 4 choices (A-D)
+- Answer distribution: **A 211, B 195, C 197, D 186** -- no positional bias of concern
+- `explanation` is `null` on 297 items (37.6%), non-null on 492
 - A further 100 general items build under `pc-gen01-`. They carry no `scope`
   and no `ref`, so they are flagged `no-source` and C1 cannot be run on them.
-  Bank total 869.
+  Bank total 879.
 - 51 retired questions are held as tombstones in the raw files. Each holds its
   sequence slot so no live id ever shifts, and none is built into the bank.
-- Zero null answers, zero multi-answer items, zero items awaiting review.
+- Zero null answers, zero multi-answer items. One item awaits review.
   `pc-05-0037` was extracted with a null answer -- its screenshot is cropped
   through the marker column -- and a reviewer ruled the answer is C on
   2026-09-08.
+- `pc-06-0003` awaits review and is held out of the default selection. Its
+  answer came from a filled radio in a selection-only screenshot; the same
+  stem is asked again in the same document as `pc-06-0039`, graded, with a
+  green check on `DP-2` and a red X on `Named peril`. The two keys disagree,
+  and the duplicate audit holds the pair as an unadjudicated CONFLICT.

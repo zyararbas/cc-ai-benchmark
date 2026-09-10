@@ -5,10 +5,9 @@
   "stem_threshold": 0.93,
   "answer_threshold": 0.75,
   "tally": {
-    "CONFLICT": 1,
     "DISTINCT": 3,
     "IDENTICAL": 2,
-    "SHUFFLED": 10,
+    "SHUFFLED": 11,
     "VARIANTS": 4
   },
   "retire_uids": [
@@ -23,10 +22,11 @@
     "scoped_questions_19.json:q_20",
     "scoped_questions_19.json:q_51",
     "scoped_questions_6.json:q_37",
-    "scoped_questions_6.json:q_38"
+    "scoped_questions_6.json:q_38",
+    "scoped_questions_6.json:q_40"
   ],
-  "item_count_after_dedup": 777,
-  "needs_adjudication": 1,
+  "item_count_after_dedup": 776,
+  "needs_adjudication": 0,
   "clusters": [
     {
       "verdict": "VARIANTS",
@@ -471,22 +471,24 @@
       ]
     },
     {
-      "verdict": "CONFLICT",
+      "verdict": "SHUFFLED",
       "adjudicated": false,
       "scope": "Dwelling Insurance",
       "question": "After a blizzard, the roof of the insured's home collapsed due to the weight of the snow. This would be covered under which form?",
-      "keep": null,
-      "retire": [],
+      "keep": "scoped_questions_6.json:q_39",
+      "retire": [
+        "scoped_questions_6.json:q_40"
+      ],
       "members": [
-        {
-          "uid": "scoped_questions_6.json:q_3",
-          "answer": "A",
-          "answer_text": "Named peril",
-          "has_explanation": false
-        },
         {
           "uid": "scoped_questions_6.json:q_39",
           "answer": "D",
+          "answer_text": "DP-2",
+          "has_explanation": false
+        },
+        {
+          "uid": "scoped_questions_6.json:q_40",
+          "answer": "B",
           "answer_text": "DP-2",
           "has_explanation": false
         }

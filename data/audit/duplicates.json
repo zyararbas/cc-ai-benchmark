@@ -1,13 +1,13 @@
 {
   "source_dir": "/Users/aykutyararbas/projects/cc-ai-benchmark/data/documents/questions",
-  "item_count": 779,
-  "cluster_count": 17,
+  "item_count": 789,
+  "cluster_count": 20,
   "stem_threshold": 0.93,
   "answer_threshold": 0.75,
   "tally": {
     "DISTINCT": 3,
-    "IDENTICAL": 1,
-    "SHUFFLED": 9,
+    "IDENTICAL": 2,
+    "SHUFFLED": 11,
     "VARIANTS": 4
   },
   "retire_uids": [
@@ -20,9 +20,12 @@
     "scoped_questions_16.json:q_48",
     "scoped_questions_16.json:q_53",
     "scoped_questions_19.json:q_20",
-    "scoped_questions_19.json:q_51"
+    "scoped_questions_19.json:q_51",
+    "scoped_questions_6.json:q_37",
+    "scoped_questions_6.json:q_38",
+    "scoped_questions_6.json:q_40"
   ],
-  "item_count_after_dedup": 769,
+  "item_count_after_dedup": 776,
   "needs_adjudication": 0,
   "clusters": [
     {
@@ -416,6 +419,78 @@
           "answer": "C",
           "answer_text": "Disability benefits pay the full amount of the employee's lost income if a spouse, partner or relative does not exist.",
           "has_explanation": true
+        }
+      ]
+    },
+    {
+      "verdict": "IDENTICAL",
+      "adjudicated": false,
+      "scope": "Dwelling Insurance",
+      "question": "Which of the following is NOT automatically covered by DP-1?",
+      "keep": "scoped_questions_6.json:q_1",
+      "retire": [
+        "scoped_questions_6.json:q_38"
+      ],
+      "members": [
+        {
+          "uid": "scoped_questions_6.json:q_1",
+          "answer": "B",
+          "answer_text": "Water",
+          "has_explanation": false
+        },
+        {
+          "uid": "scoped_questions_6.json:q_38",
+          "answer": "B",
+          "answer_text": "Water",
+          "has_explanation": false
+        }
+      ]
+    },
+    {
+      "verdict": "SHUFFLED",
+      "adjudicated": false,
+      "scope": "Dwelling Insurance",
+      "question": "Which form provides open peril coverage on the dwelling and other structures, insuring against risks of direct physical loss that are not specifically excluded in the policy?",
+      "keep": "scoped_questions_6.json:q_2",
+      "retire": [
+        "scoped_questions_6.json:q_37"
+      ],
+      "members": [
+        {
+          "uid": "scoped_questions_6.json:q_2",
+          "answer": "B",
+          "answer_text": "Special Form",
+          "has_explanation": false
+        },
+        {
+          "uid": "scoped_questions_6.json:q_37",
+          "answer": "A",
+          "answer_text": "Special Form",
+          "has_explanation": false
+        }
+      ]
+    },
+    {
+      "verdict": "SHUFFLED",
+      "adjudicated": false,
+      "scope": "Dwelling Insurance",
+      "question": "After a blizzard, the roof of the insured's home collapsed due to the weight of the snow. This would be covered under which form?",
+      "keep": "scoped_questions_6.json:q_39",
+      "retire": [
+        "scoped_questions_6.json:q_40"
+      ],
+      "members": [
+        {
+          "uid": "scoped_questions_6.json:q_39",
+          "answer": "D",
+          "answer_text": "DP-2",
+          "has_explanation": false
+        },
+        {
+          "uid": "scoped_questions_6.json:q_40",
+          "answer": "B",
+          "answer_text": "DP-2",
+          "has_explanation": false
         }
       ]
     }

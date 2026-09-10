@@ -188,3 +188,55 @@ def test_pdf_page_images_sort_into_reading_order(tmp_path, monkeypatch):
     names = [p.name for p in docx_images.pdf_images(tmp_path / "x.pdf", tmp_path / "out")]
     assert names == sorted(names), f"not in reading order: {names}"
     assert names[0] == "page-001-00.png"
+
+
+def test_a_restated_question_is_kept_rather_than_dropped_on_the_floor():
+    """These decks re-ask a question over a reordered option set.
+
+    Keying one candidate per stem silently discarded the second occurrence:
+    the item never reached the bank and no class was reported for it, so the
+    only trace was a count that did not add up.
+    """
+    old = [_item(1, "Stem", answer="A", choices={"A": "right", "B": "wrong"})]
+    new = [
+        _item(1, "Stem", answer="A", choices={"A": "right", "B": "wrong"}),
+        _item(2, "Stem", answer="B", choices={"A": "wrong", "B": "right"}),
+    ]
+    result = reconcile(old, new)
+    assert result["counts"]["UNCHANGED"] == 1
+    assert result["counts"]["ADDED"] == 1
+    assert result["accounted"] == len(new)
+    merged = result["merged"]
+    assert [r["id"] for r in merged] == ["q_1", "q_2"]
+    # The survivor keeps its own key; the variant is a separate item.
+    assert merged[0]["answer"] == "A" and not merged[0].get("retired")
+    assert merged[1]["answer"] == "B"
+
+
+def test_a_survivor_pairs_with_its_twin_not_with_a_variant():
+    """Order must not decide identity when a stem occurs more than once.
+
+    If the variant is matched first the survivor looks EDITED and is retired
+    for no reason, which is the destructive direction.
+    """
+    old = [_item(1, "Stem", answer="A", choices={"A": "right", "B": "wrong"})]
+    new = [
+        _item(1, "Stem", answer="B", choices={"A": "wrong", "B": "right"}),
+        _item(2, "Stem", answer="A", choices={"A": "right", "B": "wrong"}),
+    ]
+    result = reconcile(old, new)
+    assert result["counts"].get("EDITED") is None
+    # The twin sits at the other position, so the survivor reads as MOVED.
+    assert result["counts"]["MOVED"] == 1
+    assert result["counts"]["ADDED"] == 1
+    assert result["accounted"] == len(new)
+    merged = result["merged"]
+    assert merged[0]["id"] == "q_1" and not merged[0].get("retired")
+    assert merged[0]["answer"] == "A"
+
+
+def test_every_incoming_record_is_accounted_for():
+    old = [_item(1, "Kept"), _item(2, "Edited", answer="A")]
+    new = [_item(1, "Kept"), _item(2, "Edited", answer="B"), _item(3, "Fresh")]
+    result = reconcile(old, new)
+    assert result["accounted"] == len(new)
